@@ -33,9 +33,17 @@ echo Configure firewall for network
 uci set firewall.$ZONE_NAME=zone
 uci set firewall.$ZONE_NAME.name=$NAME
 uci set firewall.$ZONE_NAME.network=$NAME
-uci set firewall.$ZONE_NAME.input=ACCEPT
+uci set firewall.$ZONE_NAME.input=DROP
 uci set firewall.$ZONE_NAME.forward=DROP
 uci set firewall.$ZONE_NAME.output=ACCEPT
+
+#Allow DHCP
+uci set firewall.r_$NAME=rule
+uci set firewall.r_$NAME.src=$NAME
+uci set firewall.r_$NAME.src_port=67-68
+uci set firewall.r_$NAME.dest_port=67-68
+uci set firewall.r_$NAME.proto=udp
+uci set firewall.r_$NAME.target=ACCEPT
 
 uci commit
 

@@ -6,3 +6,4 @@ echo "Killing yrouter with PID $PID"
 kill $PID
 #del_iface t$1
 rm $yrouter_path/test$1.*
+restart_net
