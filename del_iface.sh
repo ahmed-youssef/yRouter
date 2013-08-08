@@ -9,3 +9,4 @@ uci delete firewall.z_$NAME
 uci delete firewall.r_$NAME
 
 uci commit
+/root/bin/restart_net
