@@ -39,6 +39,9 @@ uci set firewall.$ZONE_NAME.output=ACCEPT
 
 uci commit
 
+echo Restarting network
+
 /etc/init.d/network restart
 /etc/init.d/firewall restart
+/etc/init.d/dnsmasq restart
 /etc/init.d/dnsmasq restart

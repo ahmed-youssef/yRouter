@@ -17,6 +17,6 @@ $(EXECUTABLE): $(OBJECTS)
 
 install:
 	cp grouter /root/bin/grouter
-
+	cp iface.sh restart.sh /root/bin/grouter
 clean:
 	rm -rf *.o *~ 
