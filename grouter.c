@@ -157,9 +157,10 @@ void setupProgram(int ac, char *av[])
 	{
 		verbose(2, "\n[setupProgram]:: Environment variable GINI_HOME is not set..\n\n");
 		rconfig.gini_home = "~/Desktop/Grouter/";
-                //exit(1);
+                exit(1);
 	}
-
+        
+        rconfig.top_num = gAtoi(rconfig.gini_home);
 }
 
 int makePIDFile(char *rname, char rpath[])

@@ -430,10 +430,11 @@ void ifconfigCmd()
         
         GET_NEXT_PARAMETER("-addr", "ifconfig:: missing -addr spec ..");
         Dot2IP(next_tok, ip_addr);
-
-        GET_NEXT_PARAMETER("-hwaddr", "ifconfig:: missing -hwaddr spec ..");
-        Colon2MAC(next_tok, mac_addr);
         
+        if(strcmp(dev_type, "raw") != 0) {
+            GET_NEXT_PARAMETER("-hwaddr", "ifconfig:: missing -hwaddr spec ..");
+            Colon2MAC(next_tok, mac_addr);
+        }
         
         while ((next_tok = strtok(NULL, " \n")) != NULL) 
         {
@@ -455,7 +456,7 @@ void ifconfigCmd()
         else if (strcmp(dev_type, "tun") == 0)
             iface = GNETMakeTunInterface(dev_name, mac_addr, ip_addr, dst_ip, dst_port);
         else if (strcmp(dev_type, "raw") == 0)
-            iface = GNETMakeRawInterface(dev_name, mac_addr, ip_addr, iface_name);
+            iface = GNETMakeRawInterface(dev_name, ip_addr, iface_name);
             
         
         if (iface != NULL)

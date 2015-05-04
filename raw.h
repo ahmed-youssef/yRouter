@@ -12,8 +12,8 @@
 
 void* toRawDev(void *arg);
 void* fromRawDev(void *arg);
-vpl_data_t* raw_connect(char* interface);
-
+vpl_data_t* raw_connect(char* interface, unsigned char* mac_addr);
+int create_raw_interface(unsigned char *nw_addr);
 
 #endif	/* RAW_H */
 

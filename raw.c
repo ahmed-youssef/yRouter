@@ -36,6 +36,8 @@
 #include <sys/ioctl.h>
 #include <net/if.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 extern pktcore_t *pcore;
 extern classlist_t *classifier;
@@ -136,9 +138,8 @@ void* fromRawDev(void *arg)
  * Connect to the raw interface.
  */
 
-vpl_data_t *raw_connect(char* interface)
+vpl_data_t *raw_connect(char* interface, uchar* mac_addr)
 {
-    struct sockaddr saddr;
     struct sockaddr_ll sll;
     struct ifreq* ifr;
     int sock_raw;
@@ -192,10 +193,11 @@ vpl_data_t *raw_connect(char* interface)
         free(ifr);
         return NULL;
     }
-
+    
+    COPY_MAC(mac_addr, ifr->ifr_hwaddr.sa_data);
+    
     pri->data = sock_raw;
     pri->local_addr = (void*)ifr;
-    //pri->data_addr = (void*)dstaddr;
 
     return pri;
 }
@@ -248,4 +250,40 @@ int raw_sendto(vpl_data_t *vpl, void *buf, int len)
 }
 
 
-
+int create_raw_interface(unsigned char *nw_addr)
+{
+    int pid, status;                                             
+    int error;                                        
+    char* argv[4];                                               
+                                                                 
+    // Get executable path                                       
+    argv[0] = malloc(strlen(rconfig.gini_home) + strlen("iface.sh") + 2);
+    strcpy(argv[0], rconfig.gini_home);                                  
+    strcat(argv[0], "iface.sh");                                 
+    printf("path = %s\n", argv[0]);                              
+                                                                 
+    // Get topology number in ascii                              
+    argv[1] = malloc(4);                                         
+    sprintf(argv[1], "%d", rconfig.top_num);                             
+                                                                 
+    // Get IP address in ascii                                   
+    argv[2] = malloc(20);                                        
+    IP2Dot(argv[2], nw_addr);                                    
+    printf("IP address = %s\n", argv[2]);                        
+                                                                 
+    argv[3] = NULL;                      
+    pid = fork();                        
+                                         
+    if(pid == 0) {                       
+        execvp(argv[0], argv);               
+        error = -1;                      
+        exit(-1);                        
+    } else {                             
+        waitpid(pid, &status, 0);        
+        if(WEXITSTATUS(status) == 1) {   
+            error = -1;                          
+        }                                        
+    }                                            
+                                                 
+    return error;   
+}

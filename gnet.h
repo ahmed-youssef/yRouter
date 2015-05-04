@@ -76,8 +76,7 @@ interface_t *GNETMakeEthInterface(char *vsock_name, char *device,
 interface_t *GNETMakeTapInterface(char *device, uchar *mac_addr, uchar *nw_addr);
 interface_t *GNETMakeTunInterface(char *device, uchar *mac_addr, uchar *nw_addr,
                                   uchar* dst_ip, short int dst_port);
-interface_t *GNETMakeRawInterface(char *device, uchar *mac_addr, uchar *nw_addr,
-                                  char* iface_name);
+interface_t *GNETMakeRawInterface(char *device, uchar *nw_addr, char* iface_name);                             
 interface_t *findInterface(int indx);
 void *delayedServerCall(void *arg);
 void *GNETHandler(void *outq);

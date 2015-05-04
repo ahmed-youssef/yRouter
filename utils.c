@@ -34,9 +34,6 @@ int compareIPUsingMask(uchar *ip_addr, uchar *network, uchar *netmask)
 }
 
 
-// This should be using the host-byte-order of x386. The x386 uses the least significant
-// byte first. For ip_addr, ip_addr[3] is the least significant byte, it should be stored
-// first in the representation.
 char *IP2Dot(char *buf, uchar ip_addr[])
 {
     struct in_addr ip;

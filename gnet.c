@@ -503,17 +503,17 @@ interface_t *GNETMakeTunInterface(char *device, uchar *mac_addr, uchar *nw_addr,
     return iface;
 }
 
-interface_t *GNETMakeRawInterface(char *device, uchar *mac_addr, uchar *nw_addr,
-                                  char* iface_name)
+interface_t *GNETMakeRawInterface(char *device, uchar *nw_addr, char* iface_name)                
 {
     vpl_data_t *vcon;
     interface_t *iface;
     int iface_id;
     char tmpbuf[MAX_TMPBUF_LEN];
     vplinfo_t *vi;
-
-    verbose(2, "[GNETMakeRawInterface]:: making Interface for [%s] with MAC %s and IP %s",
-	device, MAC2Colon(tmpbuf, mac_addr), IP2Dot((tmpbuf+20), nw_addr));
+    uchar mac_addr[6];
+    
+    verbose(2, "[GNETMakeRawInterface]:: making Interface for [%s] with IP %s",
+	device, IP2Dot((tmpbuf+20), nw_addr));
 
     
     // Ahmed: Should put this inside newInterfaceStructure() from here 
@@ -526,23 +526,30 @@ interface_t *GNETMakeRawInterface(char *device, uchar *mac_addr, uchar *nw_addr,
         free(vi); 
 	return NULL;
     }
-    // Till here
     
-    // setup the interface..
-    // Ahmed Fix MTU Size
-    iface = newInterfaceStructure(iface_name, device,
-                                  mac_addr, nw_addr, MAX_MTU);
-    
+    if(create_raw_interface(nw_addr) == -1) {
+        verbose(1, "[GNETMakeRawInterface]:: Failed to create raw interface.. ");
+        free(vi); 
+	return NULL;
+    } 
+
     verbose(2, "[GNETMakeRawInterface]:: trying to connect to %s..", device);
     // Ahmed: Fix NULL to IP of interface we like to send/receive from
-    vcon = raw_connect(iface_name); 
+    vcon = raw_connect(iface_name, mac_addr); 
     
     if(vcon == NULL)
     {
         verbose(1, "[GNETMakeRawInterface]:: unable to connect to %s", device);
         return NULL;
     }
-
+    
+    verbose(2, "[GNETMakeRawInterface]:: Interface MAC %s", MAC2Colon(tmpbuf, mac_addr));
+    
+    // setup the interface..
+    // Ahmed Fix MTU Size
+    iface = newInterfaceStructure(iface_name, device,
+                                  mac_addr, nw_addr, MAX_MTU);
+        
     iface->iface_fd = vcon->data;
     iface->vpl_data = vcon;
     

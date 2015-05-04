@@ -83,6 +83,7 @@ typedef struct _router_config
 {
 	char *router_name;
 	char *gini_home;
+        int top_num;
 	int cli_flag;
 	char *config_file;
 	char *config_dir;
