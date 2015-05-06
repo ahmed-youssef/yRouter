@@ -503,7 +503,7 @@ interface_t *GNETMakeTunInterface(char *device, uchar *mac_addr, uchar *nw_addr,
     return iface;
 }
 
-interface_t *GNETMakeRawInterface(char *device, uchar *nw_addr, char* iface_name)                
+interface_t *GNETMakeRawInterface(char *device, uchar *nw_addr)                
 {
     vpl_data_t *vcon;
     interface_t *iface;
@@ -535,7 +535,7 @@ interface_t *GNETMakeRawInterface(char *device, uchar *nw_addr, char* iface_name
 
     verbose(2, "[GNETMakeRawInterface]:: trying to connect to %s..", device);
     // Ahmed: Fix NULL to IP of interface we like to send/receive from
-    vcon = raw_connect(iface_name, mac_addr); 
+    vcon = raw_connect(mac_addr); 
     
     if(vcon == NULL)
     {
@@ -547,7 +547,7 @@ interface_t *GNETMakeRawInterface(char *device, uchar *nw_addr, char* iface_name
     
     // setup the interface..
     // Ahmed Fix MTU Size
-    iface = newInterfaceStructure(iface_name, device,
+    iface = newInterfaceStructure(device, device,
                                   mac_addr, nw_addr, MAX_MTU);
         
     iface->iface_fd = vcon->data;

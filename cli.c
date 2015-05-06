@@ -359,7 +359,7 @@ int getDevType(char *str)
  * ifconfig add eth1 -socket socketfile -addr IP_addr  -hwaddr MAC [-gateway GW] [-mtu N]
  * ifconfig add tap0 -device dev_location -addr IP_addr -hwaddr MAC
  * ifconfig add tun0 -dstip dst_ip -dstport dst_port -addr IP_addr -hwaddr MAC
- * ifconfig add raw0 -interface phy_iface_name [mode ssid encryption ipaddr hwaddr]? -addr IP_addr -hwaddr MAC
+ * ifconfig add raw0 -addr IP_addr
  * ifconfig del eth0|tap0
  * ifconfig show [brief|verbose]
  * ifconfig up eth0|tap0
@@ -421,12 +421,7 @@ void ifconfigCmd()
             
             GET_NEXT_PARAMETER("-dstport", "ifconfig:: missing -dstport spec ..");
             dst_port = (short int)atoi(next_tok);
-        } else if(strcmp(dev_type, "raw") == 0)
-        {
-            GET_NEXT_PARAMETER("-interface", "ifconfig:: missing -inteface spec ..");
-            strcpy(iface_name, next_tok);
-        }
-        
+        } 
         
         GET_NEXT_PARAMETER("-addr", "ifconfig:: missing -addr spec ..");
         Dot2IP(next_tok, ip_addr);
@@ -456,7 +451,7 @@ void ifconfigCmd()
         else if (strcmp(dev_type, "tun") == 0)
             iface = GNETMakeTunInterface(dev_name, mac_addr, ip_addr, dst_ip, dst_port);
         else if (strcmp(dev_type, "raw") == 0)
-            iface = GNETMakeRawInterface(dev_name, ip_addr, iface_name);
+            iface = GNETMakeRawInterface(dev_name, ip_addr);
             
         
         if (iface != NULL)
