@@ -292,6 +292,7 @@ int create_raw_interface(unsigned char *nw_addr)
     // Restart
     strcpy(argv[0], rconfig.gini_home); 
     strcat(argv[0], "/restart.sh");
+    printf("restart path = %s\n", argv[0]);
     free(argv[1]); 
     free(argv[2]);
     argv[1] = NULL;
