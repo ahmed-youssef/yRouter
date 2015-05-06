@@ -138,31 +138,16 @@ void* fromRawDev(void *arg)
  * Connect to the raw interface.
  */
 
-vpl_data_t *raw_connect(char* interface, uchar* mac_addr)
+vpl_data_t *raw_connect(uchar* mac_addr)
 {
     struct sockaddr_ll sll;
     struct ifreq* ifr;
     int sock_raw;
-    
-    bzero(&sll, sizeof(sll));
-    ifr = calloc(1, sizeof(struct ifreq));
-    
-    strcpy((char*)ifr->ifr_name, interface);
+    char interface[10];
+    vpl_data_t *pri;
     
     verbose(2, "[raw_connect]:: starting connection.. ");
-    vpl_data_t *pri = (vpl_data_t *)malloc(sizeof(vpl_data_t));
-    bzero(pri, sizeof(sizeof(vpl_data_t))); 
     
-    // initialize the vpl_data structure.. much of it is unused here.
-    // we are reusing vpl_data_t to minimize the changes for other code.
-    pri->sock_type = "raw";
-    pri->ctl_sock = NULL;
-    pri->ctl_addr = NULL;
-    pri->data_addr = NULL;
-    pri->local_addr = NULL;
-    pri->data = -1;
-    pri->control = -1;
-
     sock_raw = socket( AF_PACKET , SOCK_RAW , htons(ETH_P_ALL)) ;	
     if (sock_raw == -1) {
             verbose(2, "[raw_connect]:: Creating raw socket failed, error = %s", strerror(errno));
@@ -170,6 +155,12 @@ vpl_data_t *raw_connect(char* interface, uchar* mac_addr)
             return NULL;
     }
     
+    interface[0] = 't';
+    sprintf(&interface[1], "%d", rconfig.top_num); 
+    verbose(1, "[raw_connect]:: Binding to interface %s ", interface);
+    ifr = calloc(1, sizeof(struct ifreq));
+    strcpy((char*)ifr->ifr_name, interface);
+            
     if((ioctl(sock_raw, SIOCGIFINDEX, ifr)) == -1)
     {
     	verbose(2, "[raw_connect]:: Unable to find interface index, error = %s", strerror(errno));
@@ -184,9 +175,11 @@ vpl_data_t *raw_connect(char* interface, uchar* mac_addr)
     	return NULL;
     }
     
+    bzero(&sll, sizeof(sll));
     sll.sll_family = AF_PACKET;
     sll.sll_ifindex = ifr->ifr_ifindex;
     sll.sll_protocol = htons(ETH_P_ALL);
+    
     if((bind(sock_raw, (struct sockaddr*) &sll, sizeof(sll))) == -1)
     {
         verbose(2, "[raw_connect]:: Binding raw Socket Failed, error = %s", strerror(errno));
@@ -196,6 +189,17 @@ vpl_data_t *raw_connect(char* interface, uchar* mac_addr)
     
     COPY_MAC(mac_addr, ifr->ifr_hwaddr.sa_data);
     
+    pri = (vpl_data_t *)malloc(sizeof(vpl_data_t));
+    bzero(pri, sizeof(sizeof(vpl_data_t))); 
+    
+    // initialize the vpl_data structure.. much of it is unused here.
+    // we are reusing vpl_data_t to minimize the changes for other code.
+    pri->sock_type = "raw";
+    pri->ctl_sock = NULL;
+    pri->ctl_addr = NULL;
+    pri->data_addr = NULL;
+    pri->data = -1;
+    pri->control = -1;
     pri->data = sock_raw;
     pri->local_addr = (void*)ifr;
 
