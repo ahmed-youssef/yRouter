@@ -38,3 +38,7 @@ uci set firewall.$ZONE_NAME.forward=DROP
 uci set firewall.$ZONE_NAME.output=ACCEPT
 
 uci commit
+
+/etc/init.d/network restart
+/etc/init.d/firewall restart
+/etc/init.d/dnsmasq restart
