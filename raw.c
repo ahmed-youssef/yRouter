@@ -261,9 +261,9 @@ int create_raw_interface(unsigned char *nw_addr)
     char* argv[4];                                               
                                                                  
     // Get executable path                                       
-    argv[0] = malloc(strlen(rconfig.gini_home) + strlen("iface.sh") + 2);
+    argv[0] = malloc(strlen(rconfig.gini_home) + strlen("/iface.sh") + 5);
     strcpy(argv[0], rconfig.gini_home);                                  
-    strcat(argv[0], "iface.sh");                                 
+    strcat(argv[0], "/iface.sh");                                 
     printf("path = %s\n", argv[0]);                              
                                                                  
     // Get topology number in ascii                              
@@ -276,8 +276,8 @@ int create_raw_interface(unsigned char *nw_addr)
     printf("IP address = %s\n", argv[2]);                        
                                                                  
     argv[3] = NULL;                      
-    pid = fork();                        
-                                         
+    
+    pid = fork();                                                                
     if(pid == 0) {                       
         execvp(argv[0], argv);               
         error = -1;                      
@@ -288,6 +288,25 @@ int create_raw_interface(unsigned char *nw_addr)
             error = -1;                          
         }                                        
     }                                            
-                                                 
+    
+    // Restart
+    strcpy(argv[0], rconfig.gini_home); 
+    strcat(argv[0], "/restart.sh");
+    free(argv[1]); 
+    free(argv[2]);
+    argv[1] = NULL;
+    
+    pid = fork();                                                             
+    if(pid == 0) {                       
+        execvp(argv[0], argv);                                
+        exit(-1);                        
+    } else {                             
+        waitpid(pid, &status, 0);        
+        if(WEXITSTATUS(status) == 1) {   
+            error = -1;                          
+        }                                        
+    }              
+    
+    free(argv[0]);
     return error;   
 }
