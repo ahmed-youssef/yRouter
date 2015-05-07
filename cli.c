@@ -358,7 +358,7 @@ int getDevType(char *str)
  * Handler for the interface configuration command:
  * ifconfig add eth1 -socket socketfile -addr IP_addr  -hwaddr MAC [-gateway GW] [-mtu N]
  * ifconfig add tap0 -device dev_location -addr IP_addr -hwaddr MAC
- * ifconfig add tun0 -dstip dst_ip -dstport dst_port -addr IP_addr -hwaddr MAC
+ * ifconfig add tun0 -dstip dst_ip -dstport portnum -addr IP_addr -hwaddr MAC
  * ifconfig add raw0 -addr IP_addr
  * ifconfig del eth0|tap0
  * ifconfig show [brief|verbose]

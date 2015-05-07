@@ -150,14 +150,14 @@ vpl_data_t *raw_connect(uchar* mac_addr)
     
     sock_raw = socket( AF_PACKET , SOCK_RAW , htons(ETH_P_ALL)) ;	
     if (sock_raw == -1) {
-            verbose(2, "[raw_connect]:: Creating raw socket failed, error = %s", strerror(errno));
-            free(ifr);
-            return NULL;
+        verbose(2, "[raw_connect]:: Creating raw socket failed, error = %s", strerror(errno));
+        free(ifr);
+        return NULL;
     }
     
     interface[0] = 't';
     sprintf(&interface[1], "%d", rconfig.top_num); 
-    verbose(1, "[raw_connect]:: Binding to interface %s ", interface);
+    verbose(1, "[raw_connect]:: Binding to interface %s strlen = %d", interface, strlen(interface));
     ifr = calloc(1, sizeof(struct ifreq));
     strcpy((char*)ifr->ifr_name, interface);
             
@@ -168,18 +168,12 @@ vpl_data_t *raw_connect(uchar* mac_addr)
     	return NULL;
     }
     
-    if((ioctl(sock_raw, SIOCGIFHWADDR, ifr)) == -1)
-    {
-    	verbose(2, "[raw_connect]:: Unable to find interface mac address, error = %s", strerror(errno));	
-        free(ifr);
-    	return NULL;
-    }
-    
     bzero(&sll, sizeof(sll));
     sll.sll_family = AF_PACKET;
     sll.sll_ifindex = ifr->ifr_ifindex;
     sll.sll_protocol = htons(ETH_P_ALL);
     
+    verbose(2, "[raw_connect]:: ifr_index = %d", ifr->ifr_ifindex);
     if((bind(sock_raw, (struct sockaddr*) &sll, sizeof(sll))) == -1)
     {
         verbose(2, "[raw_connect]:: Binding raw Socket Failed, error = %s", strerror(errno));
@@ -187,6 +181,12 @@ vpl_data_t *raw_connect(uchar* mac_addr)
         return NULL;
     }
     
+    if((ioctl(sock_raw, SIOCGIFHWADDR, ifr)) == -1)
+    {
+    	verbose(2, "[raw_connect]:: Unable to find interface mac address, error = %s", strerror(errno));	
+        free(ifr);
+    	return NULL;
+    }
     COPY_MAC(mac_addr, ifr->ifr_hwaddr.sa_data);
     
     pri = (vpl_data_t *)malloc(sizeof(vpl_data_t));

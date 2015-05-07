@@ -352,59 +352,57 @@ interface_t *GNETMakeEthInterface(char *vsock_name, char *device,
 		verbose(1, "[GNETMakeEthInterface]:: device %s already defined.. ", device);
 		return NULL;
 	}
-	else
-	{
-		// setup the interface..
-		iface = newInterfaceStructure(vsock_name, device,
-					      mac_addr, nw_addr, iface_mtu);
 
-		/*
-		 * try connection (as client). if it fails and force client flag
-		 * is set, then return NULL. Otherwise, try server connection,
-		 * if this fails, print error and return NULL
-		 */
+	// setup the interface..
+        iface = newInterfaceStructure(vsock_name, device,
+                                      mac_addr, nw_addr, iface_mtu);
 
-		verbose(2, "[GNETMakeEthInterface]:: trying to connect to %s..", vsock_name);
-		if ((vcon = vpl_connect(vsock_name)) == NULL)
-		{
-			verbose(2, "[GNETMakeEthInterface]:: connecting as server.. ");
-			// if client mode is forced.. fail here.. cannot do much!
-			if (cforce)
-			{
-				verbose(1, "[GNETMakeEthInterface]:: unable to make network connection...");
-				return NULL;
-			}
-			// try making a server connection...
-			// now that the client connection has failed
+        /*
+         * try connection (as client). if it fails and force client flag
+         * is set, then return NULL. Otherwise, try server connection,
+         * if this fails, print error and return NULL
+         */
 
-			if ((vcon = vpl_create_server(vsock_name)) == NULL)
-			{
-				verbose(1, "[GNETMakeEthInterface]:: unable to make server connection.. ");
-				return NULL;
-			}
+        verbose(2, "[GNETMakeEthInterface]:: trying to connect to %s..", vsock_name);
+        if ((vcon = vpl_connect(vsock_name)) == NULL)
+        {
+                verbose(2, "[GNETMakeEthInterface]:: connecting as server.. ");
+                // if client mode is forced.. fail here.. cannot do much!
+                if (cforce)
+                {
+                        verbose(1, "[GNETMakeEthInterface]:: unable to make network connection...");
+                        return NULL;
+                }
+                // try making a server connection...
+                // now that the client connection has failed
 
-			iface->mode = IFACE_SERVER_MODE;
-			vi->vdata = vcon;
-			vi->iface = iface;
-			thread_stat = pthread_create(&(iface->sdwthread), NULL,
-						     (void *)delayedServerCall, (void *)vi);
-			if (thread_stat != 0)
-				return NULL;
+                if ((vcon = vpl_create_server(vsock_name)) == NULL)
+                {
+                        verbose(1, "[GNETMakeEthInterface]:: unable to make server connection.. ");
+                        return NULL;
+                }
 
-			// return for now.. the thread spawned above will change the
-			// interface state when the remote node makes the connection.
-			return iface;
-		}
+                iface->mode = IFACE_SERVER_MODE;
+                vi->vdata = vcon;
+                vi->iface = iface;
+                thread_stat = pthread_create(&(iface->sdwthread), NULL,
+                                             (void *)delayedServerCall, (void *)vi);
+                if (thread_stat != 0)
+                        return NULL;
 
-		verbose(2, "[GNETMakeEthInterface]:: VPL connection made as client ");
+                // return for now.. the thread spawned above will change the
+                // interface state when the remote node makes the connection.
+                return iface;
+        }
 
-		// fill in the rest of the interface
-		iface->iface_fd = vcon->data;
-		iface->vpl_data = vcon;
+        verbose(2, "[GNETMakeEthInterface]:: VPL connection made as client ");
 
-		upThisInterface(iface);
-		return iface;
-	}
+        // fill in the rest of the interface
+        iface->iface_fd = vcon->data;
+        iface->vpl_data = vcon;
+
+        upThisInterface(iface);
+        return iface;
 }
 
 
@@ -509,32 +507,25 @@ interface_t *GNETMakeRawInterface(char *device, uchar *nw_addr)
     interface_t *iface;
     int iface_id;
     char tmpbuf[MAX_TMPBUF_LEN];
-    vplinfo_t *vi;
     uchar mac_addr[6];
     
     verbose(2, "[GNETMakeRawInterface]:: making Interface for [%s] with IP %s",
 	device, IP2Dot((tmpbuf+20), nw_addr));
 
-    
-    // Ahmed: Should put this inside newInterfaceStructure() from here 
     iface_id = gAtoi(device);
-        
-    vi = (vplinfo_t *)malloc(sizeof(vplinfo_t)); 
     if (findInterface(iface_id) != NULL)
     {
 	verbose(1, "[GNETMakeRawInterface]:: device %s already defined.. ", device);
-        free(vi); 
 	return NULL;
     }
     
     if(create_raw_interface(nw_addr) == -1) {
         verbose(1, "[GNETMakeRawInterface]:: Failed to create raw interface.. ");
-        free(vi); 
 	return NULL;
     } 
-
+    
     verbose(2, "[GNETMakeRawInterface]:: trying to connect to %s..", device);
-    // Ahmed: Fix NULL to IP of interface we like to send/receive from
+
     vcon = raw_connect(mac_addr); 
     
     if(vcon == NULL)
@@ -575,6 +566,7 @@ void *delayedServerCall(void *arg)
 			iface->iface_fd = vcon->data;
 			iface->vpl_data = vcon;
 			upThisInterface(iface);
+                        // Ahmed: Should we add a break here?
 		}
 	}
 	return NULL;
