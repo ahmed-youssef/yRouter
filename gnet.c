@@ -486,7 +486,7 @@ interface_t *GNETMakeTunInterface(char *device, uchar *mac_addr, uchar *nw_addr,
     verbose(2, "[GNETMakeTunInterface]:: trying to connect to %s..", device);
     // Ahmed: Fix NULL to IP of interface we like to send/receive from
     // change dst_port to dst_portnum : and pass BASEPORTNUM+gAtoi(rconfig.router_name)*100)+dst_portnum as argument to tun_connect
-    vcon = tun_connect((short int)(BASEPORTNUM+iface_id+gAtoi(rconfig.router_name)*100), NULL, dst_port, dst_ip); 
+    vcon = tun_connect((short int)(BASEPORTNUM+iface_id+gAtoi(rconfig.router_name)*100), NULL, (short int)(BASEPORTNUM+dst_port+gAtoi(rconfig.router_name)*100), dst_ip); 
     
     if(vcon == NULL)
     {
