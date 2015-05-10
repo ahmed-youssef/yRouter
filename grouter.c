@@ -160,7 +160,7 @@ void setupProgram(int ac, char *av[])
                 exit(1);
 	}
         
-        rconfig.top_num = gAtoi(rconfig.gini_home);
+        rconfig.top_num = gAtoi(rconfig.router_name);
 }
 
 int makePIDFile(char *rname, char rpath[])

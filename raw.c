@@ -110,7 +110,7 @@ void* fromRawDev(void *arg)
         if ((COMPARE_MAC(in_pkt->data.header.dst, iface->mac_addr) != 0) &&
                 (COMPARE_MAC(in_pkt->data.header.dst, bcast_mac) != 0))
         {
-            verbose(1, "[fromRawDev]:: Packet[%d] dropped .. not for this router!? ", pktsize);
+            verbose(2, "[fromRawDev]:: Packet[%d] dropped .. not for this router!? ", pktsize);
             free(in_pkt);
             continue;
         }
