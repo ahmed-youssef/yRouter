@@ -3,6 +3,7 @@
  */
 
 //#include <mcheck.h>
+#include <stdio.h>
 #include <slack/std.h>
 #include <slack/err.h>
 #include <slack/prog.h>
@@ -56,7 +57,8 @@ int main(int ac, char *av[])
 	char rpath[MAX_NAME_LEN];
 	int status, *jstatus;
 	simplequeue_t *outputQ, *workQ, *qtoa;
-
+        
+        setlinebuf(stdout);
 	// setup the program properties
 	setupProgram(ac, av);
 	// creates a PID file under router_name.pid in the current directory
