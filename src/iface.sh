@@ -1,5 +1,15 @@
 #!/bin/sh
 
+# TODO allow for changing the SSID
+
+# Author: Ahmed Youssef
+# Date: April 2015
+
+# This script is used by the yRouter to create a wlan 
+# interface on OpenWrt. 
+# The first parameter is the topology ID.
+# The second parameter is the IP address of the wlan interface
+
 NAME=t$1
 IFACE_IP=$2
 

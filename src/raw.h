@@ -1,8 +1,10 @@
-/* 
- * File:   raw.h
- * Author: Ahmed Youssef
- *
- * Created on April 9, 2015, 6:52 PM
+/*
+ * This is the low level driver for the wlan interface. 
+ * It creates a wlan interface on the station and hooks up a 
+ * raw socket to the interface.
+ * 
+ * Copyright (C) 2015 Ahmed Youssef (ahmed.youssef@mail.mcgill.ca
+ * Licensed under the GPL.
  */
 
 #ifndef RAW_H

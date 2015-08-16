@@ -1,8 +1,10 @@
 /*
- * raw.c (raw driver for the GINI router)
- * AUTHOR: Ahmed Youssef
- *
- * VERSION: 1.0
+ * This is the low level driver for the wlan interface. 
+ * It creates a wlan interface on the station and hooks up a 
+ * raw socket to the interface.
+ * 
+ * Copyright (C) 2015 Ahmed Youssef (ahmed.youssef@mail.mcgill.ca
+ * Licensed under the GPL.
  */
 
 #include <slack/err.h>
@@ -261,8 +263,7 @@ int create_raw_interface(unsigned char *nw_addr)
     // Get executable path                                       
     argv[0] = malloc(strlen(rconfig.gini_home) + strlen("/iface.sh") + 5);
     strcpy(argv[0], rconfig.gini_home);                                  
-    strcat(argv[0], "/iface.sh");                                 
-    printf("path = %s\n", argv[0]);                              
+    strcat(argv[0], "/iface.sh");                                                              
                                                                  
     // Get topology number in ascii                              
     argv[1] = malloc(4);                                         
@@ -270,8 +271,7 @@ int create_raw_interface(unsigned char *nw_addr)
                                                                  
     // Get IP address in ascii                                   
     argv[2] = malloc(20);                                        
-    IP2Dot(argv[2], nw_addr);                                    
-    printf("IP address = %s\n", argv[2]);                        
+    IP2Dot(argv[2], nw_addr);                                                          
                                                                  
     argv[3] = NULL;                      
     

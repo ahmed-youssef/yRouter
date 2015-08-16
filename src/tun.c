@@ -1,8 +1,9 @@
 /*
- * tun.c (Tun driver for the GINI router)
- * AUTHOR: Ahmed Youssef
- *
- * VERSION: 1.0
+ * This is the low level driver for the tun interface. 
+ * It hooks up a UDP socket to the mesh interface.
+ * 
+ * Copyright (C) 2015 Ahmed Youssef (ahmed.youssef@mail.mcgill.ca
+ * Licensed under the GPL.
  */
 
 #include <slack/err.h>
@@ -162,13 +163,11 @@ vpl_data_t *tun_connect(short int src_port, uchar* src_IP,
     struct sockaddr_in* dstaddr = (struct sockaddr_in*)malloc(sizeof(struct sockaddr_in));
     bzero(dstaddr,sizeof(*dstaddr));
     dstaddr->sin_family = AF_INET;
-    //printf("tun_connnect:: dst_IP =%s", inet_ntoa(dst_ip));
     dstaddr->sin_addr.s_addr=htonl(dst_ip);
-    printf("destination IP = %s\n",  inet_ntoa(dstaddr->sin_addr));
+    verbose(2, "destination IP = %s\n",  inet_ntoa(dstaddr->sin_addr));
     dstaddr->sin_port=htons(dst_port);
 
     pri->data = fd;
-    printf("fd = %d\n", pri->data);
     pri->local_addr = (void*)srcaddr;
     pri->data_addr = (void*)dstaddr;
 
@@ -217,10 +216,6 @@ int tun_sendto(vpl_data_t *vpl, void *buf, int len)
 {
     int n;
     struct sockaddr_in* dstaddr = (struct sockaddr_in*)vpl->data_addr;
-    
-    printf("fd = %d\n", vpl->data);
-    printf("destination IP = %s\n",  inet_ntoa(dstaddr->sin_addr));
-    printf("destination port = %hd\n", ntohs(dstaddr->sin_port));
     
     n = sendto(vpl->data,buf,len,0,
              (struct sockaddr*)dstaddr,sizeof(*dstaddr));

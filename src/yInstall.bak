@@ -21,11 +21,7 @@ fi
 
 STA_NUM=$1
 
-# Compile and Install yRouter
-mkdir /root/bin/
-make
-make install
-
+cp iface.sh /root/yRouter
 echo "export GINI_HOME=/root/yRouter" >> /root/.profile
 echo "export PATH=\$PATH:/root/bin" >> /root/.profile
 
@@ -42,6 +38,7 @@ uci delete dhcp.lan
 uci delete firewall.@zone[0]
 
 # Add mesh interface
+
 NAME=msh
 ZONE_NAME=zone_$NAME
 
@@ -78,6 +75,5 @@ uci set firewall.$ZONE_NAME.input=ACCEPT
 uci set firewall.$ZONE_NAME.forward=ACCEPT
 uci set firewall.$ZONE_NAME.output=ACCEPT
 
-# Make changes take effect
 uci commit
 /root/bin/restart_net

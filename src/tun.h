@@ -1,8 +1,9 @@
-/* 
- * File:   tun.h
- * Author: Ahmed Youssef
- *
- * Created on March 4, 2015, 8:50 PM
+/*
+ * This is the low level driver for the tun interface. 
+ * It hooks up a UDP socket to the mesh interface.
+ * 
+ * Copyright (C) 2015 Ahmed Youssef (ahmed.youssef@mail.mcgill.ca
+ * Licensed under the GPL.
  */
 
 #ifndef TUN_H
