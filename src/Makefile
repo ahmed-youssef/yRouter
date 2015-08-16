@@ -5,7 +5,7 @@ LDFLAGS = -lslack -lpthread -lm -ldl
 SOURCES= arp.c classifier.c cli.c console.c ethernet.c filter.c fragment.c raw.c tun.c gnet.c grouter.c icmp.c info.c ip.c message.c mtu.c packetcore.c qdisc.c roundrobin.c routetable.c simplequeue.c tap.c tapio.c utils.c vpl.c wfq.c
 
 OBJECTS=$(SOURCES:.c=.o)
-EXECUTABLE=grouter
+EXECUTABLE=yrouter
 
 all: $(SOURCES) $(EXECUTABLE)
 
@@ -16,7 +16,7 @@ $(EXECUTABLE): $(OBJECTS)
 	gcc $(CFLAGS) $< -o $@
 
 install:
-	cp grouter /root/bin/grouter
+	cp yrouter /root/bin/yrouter
 	cp restart.sh /root/bin/restart_net
 	cp del_iface.sh /root/bin/del_iface
 clean:
