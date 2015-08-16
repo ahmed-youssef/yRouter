@@ -10,25 +10,25 @@ yRouter is an open source user space software router that is used in the [Wirele
 
 It is recommended to [expand the storage capacity](https://www.arduino.cc/en/Tutorial/ExpandingYunDiskSpace) of the Arduino Yun if you are installing from source. 
 
-1. ssh into the Arduino Yun:
+1) ssh into the Arduino Yun:
 
 `sshpass -p "arduino" ssh root@arduino.local`
 
-2. Install the following packages:
+2) Install the following packages:
 
 ```
 opkg update
 opkg install binutils
 opkg install make
-wget  http://downloads.arduino.cc/openwrtyun/1/packages/yun-gcc_4.6.2-2_ar71xx.ipk
+wget http://downloads.arduino.cc/openwrtyun/1/packages/yun-gcc_4.6.2-2_ar71xx.ipk
 opkg install yun-gcc_4.6.2-2_ar71xx.ipk
 opkg install perl
 opkg install screen
 ```
 
-3. Install [libslack-0.6](http://www.libslack.org/).
+3) Install [libslack-0.6](http://www.libslack.org/).
 
-4. Install yRouter:
+4) Install yRouter:
 
 ```
 cd /root/
