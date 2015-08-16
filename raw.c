@@ -82,7 +82,6 @@ void *toRawDev(void *arg)
 void* fromRawDev(void *arg)
 {
     interface_t *iface = (interface_t *) arg;
-    interface_array_t *iarr = (interface_array_t *)iface->iarray;
     uchar bcast_mac[] = MAC_BCAST_ADDR;
     gpacket_t *in_pkt;
     int pktsize;
@@ -198,7 +197,6 @@ vpl_data_t *raw_connect(uchar* mac_addr)
     pri->ctl_sock = NULL;
     pri->ctl_addr = NULL;
     pri->data_addr = NULL;
-    pri->data = -1;
     pri->control = -1;
     pri->data = sock_raw;
     pri->local_addr = (void*)ifr;
@@ -235,7 +233,7 @@ int raw_recvfrom(vpl_data_t *vpl, void *buf, int len)
 
 
 /*
- * Send packet through the tap interface pointed by the vpl data structure..
+ * Send packet through the raw interface pointed by the vpl data structure..
  */
 int raw_sendto(vpl_data_t *vpl, void *buf, int len)
 {

@@ -362,7 +362,8 @@ void *packetProcessor(void *pc)
 			ARPProcess(in_pkt);
 			break;
 		default:
-			verbose(1, "[packetProcessor]:: Packet discarded: Unknown protocol protocol");
+			verbose(1, "[packetProcessor]:: Packet discarded: Unknown protocol");
+                        // Ahmed: Shouldn't we free in_pkt?
 			// TODO: should we generate ICMP errors here.. check router RFCs
 			break;
 		}

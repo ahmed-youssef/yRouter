@@ -1,0 +1,72 @@
+#!/bin/sh
+
+if ! which screen > /dev/null; then
+    echo Please install screen first
+    exit 1
+fi
+
+if [ $# -eq 0 ]
+then
+	echo Station Number not supplied
+	exit 1
+fi
+
+STA_NUM=$1
+
+mkdir /root/Grouter/
+cp iface.sh /root/Grouter
+echo "export GINI_HOME=/root/Grouter" >> /root/.profile
+echo "export PATH=\$PATH:/root/bin" >> /root/.profile
+
+# Comment out line so that yun doesn't keep restarting
+sed -i "s/wifi-live-or-reset/#wifi-live-or-reset/" /etc/rc.local
+
+# Change yun name
+sed -i "s/option hostname[[:space:]]Arduino/option hostname yun$STA_NUM/" /etc/config/system
+
+# Delete default wlan interface
+uci delete wireless.@wifi-iface[0]
+uci delete network.lan
+uci delete dhcp.lan
+uci delete firewall.@zone[0]
+
+# Add mesh interface
+
+NAME=msh
+ZONE_NAME=zone_$NAME
+
+# Configure network
+uci set network.$NAME=interface
+uci set network.$NAME.proto=static
+uci set network.$NAME.ipaddr=192.168.0.$STA_NUM
+uci set network.$NAME.netmask=255.255.255.0
+if [ "$STA_NUM" != "1" ] 
+then
+	uci set network.$NAME.gateway=192.168.0.1
+fi
+uci set network.$NAME.metric=10
+
+# Configure Wireless
+uci set wireless.$NAME=wifi-iface
+uci set wireless.$NAME.ifname=mesh0
+uci set wireless.$NAME.device=radio0
+uci set wireless.$NAME.mode=mesh
+uci set wireless.$NAME.network=$NAME
+uci set wireless.$NAME.mesh_id=openmesh
+uci set wireless.$NAME.encryption=none
+ 
+# Configure DHCP 
+uci set dhcp.$NAME=dhcp
+uci set dhcp.$NAME.interface=$NAME
+uci set dhcp.$NAME.ignore=1
+ 
+# Configure firewall
+uci set firewall.$ZONE_NAME=zone
+uci set firewall.$ZONE_NAME.name=$NAME
+uci set firewall.$ZONE_NAME.network=$NAME
+uci set firewall.$ZONE_NAME.input=ACCEPT
+uci set firewall.$ZONE_NAME.forward=ACCEPT
+uci set firewall.$ZONE_NAME.output=ACCEPT
+
+uci commit
+/root/bin/restart_net

@@ -69,8 +69,8 @@ void *toEthernetDev(void *arg)
 		free(inpkt);          // finally destroy the memory allocated to the packet..
 	} else
 		error("[toEthernetDev]:: ERROR!! Could not find outgoing interface ...");
-
-	// this is just a dummy return -- return value not used.
+        
+	// this is just a dummy return -- return value not used. 
 	return arg;
 }
 
