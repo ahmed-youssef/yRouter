@@ -374,7 +374,6 @@ void ifconfigCmd()
     uchar mac_addr[6], ip_addr[4], gw_addr[4], dst_ip[4];
     int mtu, interface, mode;
     short int dst_port;
-    char iface_name[IFNAMSIZ];
     
     // set default values for optional parameters
     bzero(gw_addr, 4);
@@ -391,7 +390,7 @@ void ifconfigCmd()
     }
     if (!strcmp(next_tok, "add"))
     {
-        //GET_THIS_OR_THIS_PARAMETER("eth", "tap", "ifconfig:: missing interface spec ..");
+       
         next_tok = strtok(NULL, " \n");
         
         if ( (next_tok == NULL) || (findDeviceDriver(next_tok) == NULL) ) 
