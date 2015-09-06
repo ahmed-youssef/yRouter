@@ -363,8 +363,7 @@ void *packetProcessor(void *pc)
 			break;
 		default:
 			verbose(1, "[packetProcessor]:: Packet discarded: Unknown protocol");
-                        // Ahmed: Shouldn't we free in_pkt?
-			// TODO: should we generate ICMP errors here.. check router RFCs
+                        free(in_pkt);
 			break;
 		}
 	}

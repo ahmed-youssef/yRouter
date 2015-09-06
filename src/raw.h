@@ -3,7 +3,7 @@
  * It creates a wlan interface on the station and hooks up a 
  * raw socket to the interface.
  * 
- * Copyright (C) 2015 Ahmed Youssef (ahmed.youssef@mail.mcgill.ca
+ * Copyright (C) 2015 Ahmed Youssef (ahmed.youssef@mail.mcgill.ca)
  * Licensed under the GPL.
  */
 

@@ -65,7 +65,7 @@ void *toEthernetDev(void *arg)
 		}
 		pkt_size = findPacketSize(&(inpkt->data));
 		verbose(2, "[toEthernetDev]:: vpl_sendto called for interface %d..%d bytes written ", iface->interface_id, pkt_size);
-		vpl_sendto(iface->vpl_data, &(inpkt->data), pkt_size); // Ahmed Return error code not checked
+		vpl_sendto(iface->vpl_data, &(inpkt->data), pkt_size); 
 		free(inpkt);          // finally destroy the memory allocated to the packet..
 	} else
 		error("[toEthernetDev]:: ERROR!! Could not find outgoing interface ...");

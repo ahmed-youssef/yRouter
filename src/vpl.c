@@ -93,8 +93,8 @@ vpl_data_t *vpl_connect(char *vsock_name)
 	} name;
 
 	verbose(2, "[vpl_connect]:: starting connection.. ");
-	vpl_data_t *pri = (vpl_data_t *)malloc(sizeof(vpl_data_t));
-	bzero(pri, sizeof(sizeof(vpl_data_t))); // Ahmed Why sizeof(sizeof)?
+	vpl_data_t *pri = (vpl_data_t *)calloc(sizeof(vpl_data_t));
+	
 	pri->sock_type = "unix";
 	pri->ctl_sock = strdup(vsock_name);
 	pri->ctl_addr = new_addr(pri->ctl_sock,
@@ -325,7 +325,7 @@ int vpl_accept_connect(vpl_data_t *v)
 int vpl_recvfrom(vpl_data_t *vpl, void *buf, int len)
 {
         int n;
-        // Ahmed: Why is this non-blocking?
+
         while(((n = recvfrom(vpl->data,  buf,  len, 0, NULL, NULL)) < 0) &&
               (errno == EINTR)) ;
 

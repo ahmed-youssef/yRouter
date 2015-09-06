@@ -402,9 +402,9 @@ void ifconfigCmd()
         
         strcpy(dev_name, next_tok);
         sscanf(dev_name, "%[a-z]", dev_type);
-        interface = gAtoi(dev_name); // Ahmed: BUG if same number for different names such as eth1 and tun1 
+        interface = gAtoi(dev_name);
 
-        if ((interface == 0) && (strcmp(dev_type, "eth") == 0)) // Ahmed: bad convention
+        if ((interface == 0) && (strcmp(dev_type, "eth") == 0))
         {
             printf("[ifconfigCmd]:: device number 0 is reserved for tap - start from 1\n");
             return;

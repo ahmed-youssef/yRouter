@@ -2,7 +2,7 @@
  * This is the low level driver for the tun interface. 
  * It hooks up a UDP socket to the mesh interface.
  * 
- * Copyright (C) 2015 Ahmed Youssef (ahmed.youssef@mail.mcgill.ca
+ * Copyright (C) 2015 Ahmed Youssef (ahmed.youssef@mail.mcgill.ca)
  * Licensed under the GPL.
  */
 
@@ -150,7 +150,6 @@ vpl_data_t *tun_connect(short int src_port, uchar* src_IP,
     struct sockaddr_in* srcaddr = (struct sockaddr_in*)malloc(sizeof(struct sockaddr_in));
     bzero(srcaddr,sizeof(*srcaddr));
     srcaddr->sin_family = AF_INET;
-    //srcaddr->sin_addr.s_addr=inet_addr(src_IP); Ahmed fix
     srcaddr->sin_addr.s_addr = htonl(INADDR_ANY);
     srcaddr->sin_port=htons(src_port);
     if(bind(fd,(struct sockaddr *)srcaddr,sizeof(*srcaddr))== -1)
@@ -203,7 +202,6 @@ int tun_recvfrom(vpl_data_t *vpl, void *buf, int len)
     }
     
     verbose(2, "[tun_recvfrom]:: Destination MAC is %s ", MAC2Colon(tmpbuf, buf));
-    //copy2Queue(consoleq, buf, len); Ahmed: is this necessary?
     return EXIT_SUCCESS;
         
 }
@@ -224,8 +222,7 @@ int tun_sendto(vpl_data_t *vpl, void *buf, int len)
 	verbose(2, "[tun_sendto]:: unable to send packet, error = %s", strerror(errno));		
 	return EXIT_FAILURE;
     }
-    
-    //copy2Queue(consoleq, buf, len); Ahmed: is this necessary?    
+       
     return EXIT_SUCCESS;
 }
 

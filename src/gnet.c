@@ -26,7 +26,8 @@
 #include "routetable.h"
 
 #define MAX_MTU 1500
-#define BASEPORTNUM 32000
+#define BASEPORTNUM 60000
+
 extern route_entry_t route_tbl[MAX_ROUTES];
 extern router_config rconfig;
 
@@ -346,7 +347,6 @@ interface_t *GNETMakeEthInterface(char *vsock_name, char *device,
 		device, MAC2Colon(tmpbuf, mac_addr), IP2Dot((tmpbuf+20), nw_addr));
 
 	iface_id = gAtoi(device);
-	vi = (vplinfo_t *)malloc(sizeof(vplinfo_t));
 	if (findInterface(iface_id) != NULL)
 	{
 		verbose(1, "[GNETMakeEthInterface]:: device %s already defined.. ", device);
@@ -381,7 +381,9 @@ interface_t *GNETMakeEthInterface(char *vsock_name, char *device,
                         verbose(1, "[GNETMakeEthInterface]:: unable to make server connection.. ");
                         return NULL;
                 }
-
+                
+                vi = (vplinfo_t *)malloc(sizeof(vplinfo_t));
+                
                 iface->mode = IFACE_SERVER_MODE;
                 vi->vdata = vcon;
                 vi->iface = iface;
@@ -463,16 +465,12 @@ interface_t *GNETMakeTunInterface(char *device, uchar *mac_addr, uchar *nw_addr,
     interface_t *iface;
     int iface_id;
     char tmpbuf[MAX_TMPBUF_LEN];
-    vplinfo_t *vi;
 
     verbose(2, "[GNETMakeTunInterface]:: making Interface for [%s] with MAC %s and IP %s",
 	device, MAC2Colon(tmpbuf, mac_addr), IP2Dot((tmpbuf+20), nw_addr));
 
     iface_id = gAtoi(device);
         
-    /* Ahmed: If interface is already defined, vi should be freed which is not the 
-    case here. Would it be better to put this line after the else statement? */
-    vi = (vplinfo_t *)malloc(sizeof(vplinfo_t)); 
     if (findInterface(iface_id) != NULL)
     {
 	verbose(1, "[GNETMakeTunInterface]:: device %s already defined.. ", device);
@@ -484,8 +482,7 @@ interface_t *GNETMakeTunInterface(char *device, uchar *mac_addr, uchar *nw_addr,
                                   mac_addr, nw_addr, MAX_MTU);
     
     verbose(2, "[GNETMakeTunInterface]:: trying to connect to %s..", device);
-    // Ahmed: Fix NULL to IP of interface we like to send/receive from
-    // change dst_port to dst_portnum : and pass BASEPORTNUM+gAtoi(rconfig.router_name)*100)+dst_portnum as argument to tun_connect
+    
     vcon = tun_connect((short int)(BASEPORTNUM+iface_id+gAtoi(rconfig.router_name)*100), NULL, (short int)(BASEPORTNUM+dst_port+gAtoi(rconfig.router_name)*100), dst_ip); 
     
     if(vcon == NULL)
@@ -536,8 +533,6 @@ interface_t *GNETMakeRawInterface(char *device, uchar *nw_addr)
     
     verbose(2, "[GNETMakeRawInterface]:: Interface MAC %s", MAC2Colon(tmpbuf, mac_addr));
     
-    // setup the interface..
-    // Ahmed Fix MTU Size
     iface = newInterfaceStructure(device, device,
                                   mac_addr, nw_addr, MAX_MTU);
         
@@ -566,7 +561,6 @@ void *delayedServerCall(void *arg)
 			iface->iface_fd = vcon->data;
 			iface->vpl_data = vcon;
 			upThisInterface(iface);
-                        // Ahmed: Should we add a break here?
 		}
 	}
 	return NULL;

@@ -3,7 +3,7 @@
  * It creates a wlan interface on the station and hooks up a 
  * raw socket to the interface.
  * 
- * Copyright (C) 2015 Ahmed Youssef (ahmed.youssef@mail.mcgill.ca
+ * Copyright (C) 2015 Ahmed Youssef (ahmed.youssef@mail.mcgill.ca)
  * Licensed under the GPL.
  */
 
@@ -229,7 +229,6 @@ int raw_recvfrom(vpl_data_t *vpl, void *buf, int len)
     } 
     
     verbose(2, "[raw_recvfrom]:: Destination MAC is %s ", MAC2Colon(tmpbuf, buf));
-    //copy2Queue(consoleq, buf, len); Ahmed: is this necessary?
     return EXIT_SUCCESS;   
 }
 
@@ -248,8 +247,7 @@ int raw_sendto(vpl_data_t *vpl, void *buf, int len)
 	verbose(2, "[raw_sendto]:: unable to send packet, error = %s", strerror(errno));		
 	return EXIT_FAILURE;
     }
-    
-    //copy2Queue(consoleq, buf, len); Ahmed: is this necessary?    
+       
     return EXIT_SUCCESS;
 }
 
