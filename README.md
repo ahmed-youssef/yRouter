@@ -46,7 +46,7 @@ Usage is the same as the [gRouter](https://github.com/anrl/gini/tree/master/back
   - portnum: The interface number of the tun interface on the other end of the virtual link.
   - IP_addr : The virtual IP address of the tun interface.
   - MAC : The virtual MAC address of the tun interface.
-- ifconfig add -dev wlan0 -addr IP addr [-ssid SSID]: Creates a wlan interface on the yRouter.
+- ifconfig add -dev raw0 -addr IP addr [-ssid SSID]: Creates a wlan interface on the yRouter.
 - IP_addr : The IP address of the wlan interface.
-- SSID: The SSID of the wlan interface.
+- SSID: The SSID of the wlan interface. [TODO: Not implemented yet]
 
